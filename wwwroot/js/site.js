@@ -1,4 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 // ===============================================
@@ -142,19 +142,29 @@ function setLanguage(lang) {
     localStorage.setItem('language', lang);
     document.querySelectorAll('[data-translate]').forEach(element => {
         const key = element.getAttribute('data-translate');
-        if (translations[lang][key]) {
+        if (translations[lang] && translations[lang][key]) {
             element.textContent = translations[lang][key];
         }
     });
+
+    // Actualizar el toggle visual
+    const languageToggle = document.getElementById('languageToggle');
+    if (languageToggle) {
+        languageToggle.checked = (lang === 'en');
+    }
 }
 
 function loadLanguage() {
-    const savedLang = localStorage.getItem('language') || 'es';
-    const languageToggle = document.getElementById('languageToggle');
-    if (languageToggle) {
-        languageToggle.checked = (savedLang === 'en');
-        setLanguage(savedLang);
+    const savedLang = localStorage.getItem('language');
+    // Si no hay idioma guardado, usar español por defecto
+    const defaultLang = savedLang || 'es';
+
+    // Si es la primera vez, guardar español como predeterminado
+    if (!savedLang) {
+        localStorage.setItem('language', 'es');
     }
+
+    setLanguage(defaultLang);
 }
 
 // ===============================================
@@ -199,7 +209,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const languageToggle = document.getElementById('languageToggle');
     if (languageToggle) {
         languageToggle.addEventListener('change', function () {
-            setLanguage(this.checked ? 'en' : 'es');
+            const newLang = this.checked ? 'en' : 'es';
+            console.log('Cambiando idioma a:', newLang); // Debug
+            setLanguage(newLang);
         });
     }
 });
